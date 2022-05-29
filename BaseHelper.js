@@ -98,6 +98,7 @@ function updateObject(base, ...sources) {
 
 function getPropValueByPath(obj, path, def) {
     try {
+        if (!path) {return obj}
         let _obj = obj
         let _path = path.split('.')
         let i

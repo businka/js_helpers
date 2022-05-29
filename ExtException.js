@@ -1,8 +1,9 @@
 import {isEmptyObject} from "./BaseHelper";
 
+
 const codes = {};
 
-export default class ExtException extends Error {
+export class ExtException extends Error {
     name = 'ExtException'
     code;
     message;
@@ -127,3 +128,6 @@ export default class ExtException extends Error {
         return JSON.stringify(this.toDict());
     }
 }
+
+export default ExtException
+
