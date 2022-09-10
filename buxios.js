@@ -33,9 +33,9 @@ function processError(response) {
             redirectToSignIn(window.location.pathname + window.location.search)
             break
         case 409:
-            destPath = `${url.base}${url.app}Account/select`
+            destPath = `${url.base}${url.appName}Account/select`
             if (destPath !== window.location.pathname)
-                navigate(`${destPath}?redirect=${url.base}${url.app}${url.path}${window.location.search}`)
+                navigate(`${destPath}?redirect=${url.base}${url.appName}${url.path}${window.location.search}`)
             break
     }
     if (contentType && contentType.toLowerCase().indexOf('application/json') >= 0) {
