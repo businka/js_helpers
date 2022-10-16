@@ -9,7 +9,7 @@ module.exports = {
 }
 
 function getJsonType(value) {
-    const legal = ['string', 'number', 'object', 'array', 'boolean', 'null']
+    const legal = ['string', 'number', 'object', 'array', 'boolean', 'null', 'undefined']
     let node_type = typeof value;
     if (node_type === 'object') {
         if (value instanceof Array) {
@@ -19,7 +19,7 @@ function getJsonType(value) {
         }
     }
     if (legal.indexOf(node_type) < 0)
-        throw new Error(`ad type ${node_type} value ${value}`)
+        throw new Error(`Bad type ${node_type} value ${value}`)
     return node_type;
 }
 
@@ -40,7 +40,6 @@ function objHasOwnProperty(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop)
 }
 
-
 function getType(value) {
     let baseType = typeof value
     switch (typeof value) {
@@ -57,19 +56,24 @@ function getType(value) {
     }
 }
 
-function _updateObject(base, source) {
+function _updateObject(base, source, path) {
     if (isEmptyObject(source))
         return base
     for (let elem in source) {
         if (!Object.prototype.hasOwnProperty.call(source, elem))
             continue
-        let elemType = getJsonType(source[elem])
+        let elemType
+        try {
+            elemType = getJsonType(source[elem])
+        } catch (err) {
+            throw new Error(`In object ${path} ${err}`)
+        }
         switch (elemType) {
             case 'object':
                 if (!objHasOwnProperty(base, elem)) {
                     base[elem] = {}
                 }
-                _updateObject(base[elem], source[elem])
+                _updateObject(base[elem], source[elem], `${path}.${elem}`)
                 break;
             case 'array':
                 // if (!objHasOwnProperty(base, elem)) {
