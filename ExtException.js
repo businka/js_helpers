@@ -56,11 +56,14 @@ export class ExtException extends Error {
 
     _initFromDict(data) {
         let i,
-            names = ['code', 'message', 'detail', 'action', 'dump', 'stack'];
+            names = ['code', 'message', 'detail', 'action', 'dump'];
         for (i = 0; i < 6; i++) {
             if (Object.prototype.hasOwnProperty.call(data, names[i]) && data[names[i]] !== undefined) {
                 this[names[i]] = data[names[i]];
             }
+        }
+        if (Object.prototype.hasOwnProperty.call(data, 'stack') && data['stack'] !== undefined) {
+            this['stack2'] = data['stack'];
         }
     }
 
