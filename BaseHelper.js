@@ -5,7 +5,7 @@ module.exports = {
     updateObject,
     getPropValueByPath,
     copyTextToClipboard,
-
+    zeroPad
 }
 
 function getJsonType(value, strong=false) {
@@ -159,3 +159,9 @@ function copyTextToClipboard(text, errorSelector = null) {
         // console.error('Async: Could not copy text: ', err);
     });
 }
+
+function zeroPad (num, places) {
+    return String(num).padStart(places, '0')
+}
+
+
