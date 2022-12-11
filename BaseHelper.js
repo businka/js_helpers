@@ -8,17 +8,19 @@ module.exports = {
 
 }
 
-function getJsonType(value) {
-    const legal = ['string', 'number', 'object', 'array', 'boolean', 'null', 'undefined']
+function getJsonType(value, strong=false) {
+    const legal = ['string', 'number', 'object', 'array', 'boolean', 'null']
     let node_type = typeof value;
     if (node_type === 'object') {
         if (value instanceof Array) {
             node_type = 'array';
         } else if (node_type === null) {
             node_type = 'null';
+        } else if (value instanceof Date) {
+            node_type = 'date'
         }
     }
-    if (legal.indexOf(node_type) < 0)
+    if (strong && legal.indexOf(node_type) < 0)
         throw new Error(`Bad type ${node_type} value ${value}`)
     return node_type;
 }

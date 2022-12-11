@@ -18,6 +18,7 @@ export class ExtException extends Error {
         Object.setPrototypeOf(this, new.target.prototype);
         this.code = 100;
         this.message = '';
+        this.message2 = '';
         this.detail = '';
         this.action = '';
         this.dump = {};
