@@ -6,7 +6,7 @@ export default class UrlParam {
   }
 
   parseUrl() {
-    let _location = decodeURI(location.href)
+    let _location = decodeURI(location.search)
     let pos = _location.indexOf("?");
     if (pos !== -1) {
       let query = _location.substr(pos + 1);
