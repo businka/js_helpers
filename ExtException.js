@@ -1,57 +1,45 @@
 import {isEmptyObject} from "./BaseHelper";
 
 
-const codes = {};
-
 export class ExtException extends Error {
-    name = 'ExtException'
-    code;
-    message;
-    detail;
-    action;
-    dump;
-    new_msg;
-    stack2;
 
-    constructor(param) {
+    constructor({message, detail, parent, action, dump = {}, stack2 = []} = {}) {
         super('');
         Object.setPrototypeOf(this, new.target.prototype);
-        this.code = 100;
-        this.message = '';
-        this.message2 = '';
-        this.detail = '';
-        this.action = '';
-        this.dump = {};
-        this.stack2 = []; // todo добавить trace через new Error.stack
-        this.new_msg = false;
-        if (typeof param != 'object') {
-            this.message = `Bad init ExtException (${param})`
-        }
-        const parent = param.parent;
+        this.code = 100
+        this.message = message
+        this.detail = detail
+        this.action = action
+        this.dump = dump
+        console.log(stack2)
+        this.stack2 = stack2 // todo добавить trace через new Error.stack
+        this.new_msg = !!message
         if (parent) {
-            if ((parent instanceof Error && !(parent instanceof ExtException)) || parent instanceof DOMException) {
-
-                if (parent.message && parent.message[0] === '{') {
-                    this.initFromExtException(JSON.parse(parent.message), param)
-                } else {
-                    this.code = 3000;
-                    this.message = parent.message || String(parent);
-                    if (!Object.prototype.hasOwnProperty.call(param, 'dump')) {
-                        param['dump'] = {}
-                    }
-                    param['dump']['trace'] = String(parent.stack).split('\n')[1]
+            if (parent instanceof ExtException) {
+                this.add_parent_to_stack(parent)
+                if (!this.message) {
+                    this.message = parent.message
+                    this.detail = parent.detail
+                    this.code = parent.code
+                    this.dump = parent.dump
+                }
+            } else if (parent instanceof Error || parent instanceof DOMException) {
+                if (!this.message) {
+                    this.message = 'Unknown error'
+                }
+                if (!this.detail) {
+                    this.detail = String(parent)
                 }
 
+                this.stack2.push({
+                    'message': String(parent),
+                    'trace': String(parent.stack).split('\n')[1]
+                })
+
             }
-            if (parent instanceof ExtException) {
-                this.initFromExtException(parent, param)
-            }
-            this.new_msg = Object.prototype.hasOwnProperty.call(param, 'message');
-        }
-        this._initFromDict(param);
-        if (param.code) {
-            this.code = param.code;
-            this.message = param.message ? param.message : codes[param.code] || 'Неизвестная ошибка';
+            // if (parent instanceof ExtException) {
+            //     this.initFromExtException(parent, param)
+            // }
         }
     }
 
@@ -123,7 +111,8 @@ export class ExtException extends Error {
             action: this.action,
             dump: this.dump,
             code: this.code,
-            stack: this.stack2
+            stack: this.stack2,
+            __name__: this.constructor.name
         }
 
     }
