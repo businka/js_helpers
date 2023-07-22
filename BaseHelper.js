@@ -2,6 +2,7 @@ module.exports = {
     objHasOwnProperty,
     isEmptyObject,
     getType,
+    getJsonType,
     updateObject,
     getPropValueByPath,
     copyTextToClipboard,
@@ -11,14 +12,18 @@ module.exports = {
 function getJsonType(value, strong=false) {
     const legal = ['string', 'number', 'object', 'array', 'boolean', 'null']
     let node_type = typeof value;
-    if (node_type === 'object') {
-        if (value instanceof Array) {
-            node_type = 'array';
-        } else if (node_type === null) {
-            node_type = 'null';
-        } else if (value instanceof Date) {
-            node_type = 'date'
-        }
+    switch (node_type) {
+        case 'object':
+            if (value instanceof Array) {
+                node_type = 'array';
+            } else if (node_type === null) {
+                node_type = 'null';
+            } else if (value instanceof Date) {
+                node_type = 'date'
+            }
+            break
+        case 'undefined':
+            node_type = 'null'
     }
     if (strong && legal.indexOf(node_type) < 0)
         throw new Error(`Bad type ${node_type} value ${value}`)

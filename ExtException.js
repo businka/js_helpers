@@ -1,47 +1,66 @@
 import {isEmptyObject} from "./BaseHelper";
 
-
-export class ExtException extends Error {
+export default class ExtException extends Error {
 
     constructor({message, detail, parent, action, dump = {}, stack2 = []} = {}) {
         super('');
-        Object.setPrototypeOf(this, new.target.prototype);
-        this.code = 100
-        this.message = message
-        this.detail = detail
-        this.action = action
-        this.dump = dump
-        console.log(stack2)
-        this.stack2 = stack2 // todo добавить trace через new Error.stack
-        this.new_msg = !!message
-        if (parent) {
-            if (parent instanceof ExtException) {
-                this.add_parent_to_stack(parent)
-                if (!this.message) {
-                    this.message = parent.message
-                    this.detail = parent.detail
-                    this.code = parent.code
-                    this.dump = parent.dump
-                }
-            } else if (parent instanceof Error || parent instanceof DOMException) {
-                if (!this.message) {
-                    this.message = 'Unknown error'
-                }
-                if (!this.detail) {
-                    this.detail = String(parent)
-                }
+        try {
+            Object.setPrototypeOf(this, new.target.prototype);
+            this.code = 100
+            this.message = message
+            this.detail = detail
+            this.action = action
+            this.dump = dump
+            // console.log(stack2)
+            this.stack2 = stack2 // todo добавить trace через new Error.stack
+            this.new_msg = !!message
+            if (parent) {
+                if (parent instanceof ExtException) {
+                    this.add_parent_to_stack(parent)
+                    if (!this.message) {
+                        this.message = parent.message
+                        this.detail = parent.detail
+                        this.code = parent.code
+                        this.dump = parent.dump
+                    }
+                } else if (parent instanceof Error || parent instanceof DOMException) {
+                    if (!this.message) {
+                        this.message = 'Unknown error'
+                    }
+                    if (!this.detail) {
+                        this.detail = String(parent)
+                    }
 
-                this.stack2.push({
-                    'message': String(parent),
-                    'trace': String(parent.stack).split('\n')[1]
-                })
+                    this.stack2.push({
+                        'message': String(parent),
+                        'traceback': String(parent.stack).split('\n')[1]
+                    })
 
+                }
+                // if (parent instanceof ExtException) {
+                //     this.initFromExtException(parent, param)
+                // }
             }
-            // if (parent instanceof ExtException) {
-            //     this.initFromExtException(parent, param)
-            // }
+        } catch (err) {
+            this.message = 'Error init ExtExeption'
+            console.error(this.message,{message, parent, detail, action, stack2, dump},err)
         }
     }
+    addSysExcToStack() {
+        let data = this.getSysExcInfo()
+        if (!data) {
+            return
+        }
+        if (this.action) {
+            data['action'] = self.action
+        }
+        this.stack2.push(data)
+    }
+
+    getSysExcInfo(){
+        return String(this.stack).split('\n')[1]
+    }
+
 
     _initFromDict(data) {
         let i,
@@ -56,35 +75,40 @@ export class ExtException extends Error {
         }
     }
 
-    initFromExtException(parent, param) {
-        this.add_parent_to_stack(parent, param);
-        this.message = parent.message;
-        this.code = parent.code;
-        this.detail = parent.detail;
-        this.stack2 = parent.stack2;
-    }
+    // initFromExtException(parent, param) {
+    //     this.add_parent_to_stack(parent, param);
+    //     this.message = parent.message;
+    //     this.code = parent.code;
+    //     this.detail = parent.detail;
+    //     this.stack2 = parent.stack2;
+    // }
 
-    add_parent_to_stack(parent, param) {
+    add_parent_to_stack(parent) {
         if (!(parent instanceof ExtException)) {
             return;
         }
         this.stack2 = this.stack2.concat(parent.stack2);
-        if (!parent.action && !parent.dump && !param.detail) {
+        if (!parent.action) {
             return;
         }
-        let _stack = {}
-        // _stack.parent.stack
-        if (parent.action) {
-            _stack.action = parent.action
+        let _stack = {
+            action: parent.action
+        }
+
+        if (!this.stack2.length){
+            let data = this.getSysExcInfo()
+            if (data) {
+                _stack['traceback'] = data['traceback']
+            }
         }
 
         if (this.new_msg) {
             _stack.messsge = parent.message;
+            if (parent.detail) {
+                _stack.detail = parent.detail;
+            }
         }
 
-        if (parent.detail && param.detail) {
-            _stack.detail = parent.detail;
-        }
         if (!isEmptyObject(parent.dump)) {
             _stack['dump'] = parent.dump;
         }
@@ -122,5 +146,6 @@ export class ExtException extends Error {
     }
 }
 
-export default ExtException
 
+
+export class UserError extends  ExtException{}
