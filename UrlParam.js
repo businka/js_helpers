@@ -1,7 +1,7 @@
 export default class UrlParam {
-  param = {}
 
   constructor() {
+    this.param = {}
     this.parseUrl()
   }
 
