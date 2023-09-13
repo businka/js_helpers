@@ -91,7 +91,11 @@ function _updateObject(base, source, path) {
                 base[elem] = base[elem].concat(source[elem])
                 break;
             default:
-                base[elem] = source[elem]
+                try {
+                    base[elem] = source[elem]
+                } catch (e) {
+                    throw e
+                }
         }
     }
     return base
