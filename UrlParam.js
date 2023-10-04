@@ -22,7 +22,7 @@ export default class UrlParam {
   }
 
   get(name, def) {
-    return Object.prototype.hasOwnProperty.call(this.param, name) ? this.param[name] : def;
+    return Object.prototype.hasOwnProperty.call(this.param, name) ? decodeURI(this.param[name]) : def;
   }
 
   add(name, value) {
