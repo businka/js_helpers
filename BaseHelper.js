@@ -99,6 +99,7 @@ export function updateObject(base, ...sources) {
 
 export function getPropValueByPath(obj, path, def) {
     try {
+        if (!obj) {return def}
         if (!path) {return obj}
         let _obj = obj
         let _path = path.split('.')
@@ -163,4 +164,9 @@ export function uuid4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   );
+}
+
+export function money(value) {
+  if (!value) return ''
+  return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ')
 }
