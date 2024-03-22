@@ -6,7 +6,7 @@ export function getJsonType(value, strong=false) {
         case 'object':
             if (value instanceof Array) {
                 node_type = 'array';
-            } else if (node_type === null) {
+            } else if (value === null) {
                 node_type = 'null';
             } else if (value instanceof Date) {
                 node_type = 'date'
