@@ -2,7 +2,8 @@ module.exports = {
   findIndexInArrayObj,
   findInArrayObj,
   sortArrayNumber,
-  sortArrayObject
+  sortArrayObject,
+  findByKey
 }
 
 
@@ -34,4 +35,13 @@ function sortArrayObject(arr, key) {
       return 1
     return 0
   })
+}
+
+function findByKey(items, keyValue, keyField = 'id') {
+  for (let i = 0; i < items.length; i++) {
+    if (items[i][keyField] === keyValue) {
+      return i
+    }
+  }
+  return -1
 }

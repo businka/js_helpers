@@ -7,7 +7,8 @@ module.exports = {
     getPropValueByPath,
     copyTextToClipboard,
     zeroPad,
-    uuid4
+    uuid4,
+    isObject
 }
 
 function getJsonType(value, strong=false) {
@@ -178,5 +179,18 @@ function uuid4() {
     return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
+}
+
+function isObject(arg) {
+    return typeof arg === 'object' && arg !== null;
+}
+
+async function wait(ms) {
+    return new Promise(resolve => {
+        const id = setTimeout(() => {
+            clearTimeout(id)
+            resolve(null)
+        }, ms)
+    })
 }
 
