@@ -8,7 +8,8 @@ module.exports = {
     copyTextToClipboard,
     zeroPad,
     uuid4,
-    isObject
+    isObject,
+    wait
 }
 
 function getJsonType(value, strong=false) {
