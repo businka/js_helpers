@@ -36,6 +36,15 @@ export default class ExtException extends Error {
                         'traceback': String(parent.stack).split('\n')[1]
                     })
 
+                } else {
+                    this.add_parent_to_stack(parent, "stack")
+                    if (!this.message) {
+                        this.message = parent.message
+                        this.detail = parent.detail
+                        this.code = parent.code
+                        this.dump = parent.dump
+                    }
+
                 }
                 // if (parent instanceof ExtException) {
                 //     this.initFromExtException(parent, param)
@@ -83,11 +92,11 @@ export default class ExtException extends Error {
     //     this.stack2 = parent.stack2;
     // }
 
-    add_parent_to_stack(parent) {
-        if (!(parent instanceof ExtException)) {
-            return;
+    add_parent_to_stack(parent, stack_field) {
+        if (!stack_field) {
+            stack_field = 'stack2'
         }
-        this.stack2 = this.stack2.concat(parent.stack2);
+        this.stack2 = this.stack2.concat(parent[stack_field]);
         if (!parent.action) {
             return;
         }
