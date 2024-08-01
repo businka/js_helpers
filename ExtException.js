@@ -3,7 +3,7 @@ import {isEmptyObject} from "./BaseHelper";
 export default class ExtException extends Error {
 
     constructor({message, detail, parent, action, dump = {}, stack2 = []} = {}) {
-        super('');
+        super(message);
         try {
             Object.setPrototypeOf(this, new.target.prototype);
             this.code = 100

@@ -1,18 +1,5 @@
-module.exports = {
-    objHasOwnProperty,
-    isEmptyObject,
-    getType,
-    getJsonType,
-    updateObject,
-    getPropValueByPath,
-    copyTextToClipboard,
-    zeroPad,
-    uuid4,
-    isObject,
-    wait
-}
 
-function getJsonType(value, strong=false) {
+export function getJsonType(value, strong=false) {
     const legal = ['string', 'number', 'object', 'array', 'boolean', 'null']
     let node_type = typeof value;
     switch (node_type) {
@@ -33,7 +20,7 @@ function getJsonType(value, strong=false) {
     return node_type;
 }
 
-function isEmptyObject(obj) {
+export function isEmptyObject(obj) {
     if (!obj) return true
 
     for (let elem in obj) {
@@ -44,13 +31,13 @@ function isEmptyObject(obj) {
     return true
 }
 
-function objHasOwnProperty(obj, prop) {
+export function objHasOwnProperty(obj, prop) {
     if (!obj || !prop)
         return false
     return Object.prototype.hasOwnProperty.call(obj, prop)
 }
 
-function getType(value) {
+export function getType(value) {
     let baseType = typeof value
     switch (typeof value) {
         case 'object':
@@ -66,7 +53,7 @@ function getType(value) {
     }
 }
 
-function _updateObject(base, source, path) {
+export function _updateObject(base, source, path) {
     if (isEmptyObject(source))
         return base
     for (let elem in source) {
@@ -94,17 +81,13 @@ function _updateObject(base, source, path) {
                 base[elem] = base[elem].concat(source[elem])
                 break;
             default:
-                try {
-                    base[elem] = source[elem]
-                } catch (e) {
-                    throw e
-                }
+                base[elem] = source[elem]
         }
     }
     return base
 }
 
-function updateObject(base, ...sources) {
+export function updateObject(base, ...sources) {
     if (!sources.length)
         return base
     for (let i = 0; i < sources.length; i++) {
@@ -114,14 +97,15 @@ function updateObject(base, ...sources) {
 }
 
 
-function getPropValueByPath(obj, path, def) {
+export function getPropValueByPath(obj, path, def) {
     try {
+        if (!obj) {return def}
         if (!path) {return obj}
         let _obj = obj
         let _path = path.split('.')
         let i
         for (i = 0; i < _path.length; i++) {
-            if (Object.prototype.hasOwnProperty.call(_obj, _path[i])) {
+            if (_obj && Object.prototype.hasOwnProperty.call(_obj, _path[i])) {
                 _obj = _obj[_path[i]]
             } else {
                 return def
@@ -133,7 +117,7 @@ function getPropValueByPath(obj, path, def) {
     }
 }
 
-function fallbackCopyTextToClipboard(text, errorSelector = null) {
+export function fallbackCopyTextToClipboard(text, errorSelector = null) {
     const textArea = document.createElement("textarea");
     const errorContainer = document.querySelector(errorSelector) || document.body
     textArea.value = text;
@@ -159,7 +143,7 @@ function fallbackCopyTextToClipboard(text, errorSelector = null) {
     errorContainer.removeChild(textArea);
 }
 
-function copyTextToClipboard(text, errorSelector = null) {
+export function copyTextToClipboard(text, errorSelector = null) {
     if (!navigator.clipboard) {
         fallbackCopyTextToClipboard(text, errorSelector);
         return;
@@ -172,26 +156,17 @@ function copyTextToClipboard(text, errorSelector = null) {
     });
 }
 
-function zeroPad (num, places) {
+export function zeroPad (num, places) {
     return String(num).padStart(places, '0')
 }
 
-function uuid4() {
-    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+export function uuid4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
 
-function isObject(arg) {
-    return typeof arg === 'object' && arg !== null;
+export function money(value) {
+    if (!value) return ''
+    return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ')
 }
-
-async function wait(ms) {
-    return new Promise(resolve => {
-        const id = setTimeout(() => {
-            clearTimeout(id)
-            resolve(null)
-        }, ms)
-    })
-}
-
