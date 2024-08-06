@@ -1,7 +1,20 @@
 import {isEmptyObject} from "./BaseHelper";
+export const ExtExceptionTypes = {
+    ExtException,
+    UserError
+}
 
 export default class ExtException extends Error {
-
+    static initByParent(params) {
+        const parent = params.parent
+        if (parent instanceof ExtException) {
+            return new (ExtExceptionTypes[parent.constructor.name] || ExtException)(params)
+        } else if (parent instanceof Error || parent instanceof DOMException) {
+            return new ExtException(params)
+        } else {
+            return new (ExtExceptionTypes[parent.__name__] || ExtException)(params)
+        }
+    }
     constructor({message, detail, parent, action, dump = {}, stack2 = []} = {}) {
         super(message);
         try {
