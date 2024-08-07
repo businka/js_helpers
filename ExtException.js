@@ -1,8 +1,5 @@
 import {isEmptyObject} from "./BaseHelper";
-export const ExtExceptionTypes = {
-    ExtException,
-    UserError
-}
+
 
 export default class ExtException extends Error {
     static initByParent(params) {
@@ -169,5 +166,9 @@ export default class ExtException extends Error {
 }
 
 
-
 export class UserError extends  ExtException{}
+
+export const ExtExceptionTypes = {
+    ExtException,
+    UserError
+}
