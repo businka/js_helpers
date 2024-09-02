@@ -1,4 +1,3 @@
-
 export function getJsonType(value, strong=false) {
     const legal = ['string', 'number', 'object', 'array', 'boolean', 'null']
     let node_type = typeof value;
@@ -96,6 +95,9 @@ export function updateObject(base, ...sources) {
     return base
 }
 
+export function isObject(arg) {
+    return typeof arg === 'object' && arg !== null;
+}
 
 export function getPropValueByPath(obj, path, def) {
     try {
@@ -169,4 +171,13 @@ export function uuid4() {
 export function money(value) {
     if (!value) return ''
     return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ')
+}
+
+export async function wait(ms) {
+    return new Promise(resolve => {
+        const id = setTimeout(() => {
+            clearTimeout(id)
+            resolve(null)
+        }, ms)
+    })
 }
