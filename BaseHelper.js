@@ -95,10 +95,6 @@ export function updateObject(base, ...sources) {
     return base
 }
 
-export function isObject(arg) {
-    return typeof arg === 'object' && arg !== null;
-}
-
 export function getPropValueByPath(obj, path, def) {
     try {
         if (!obj) {return def}
