@@ -171,8 +171,7 @@ export function money(value) {
 
 export async function wait(ms) {
     return new Promise(resolve => {
-        const id = setTimeout(() => {
-            clearTimeout(id)
+        setTimeout(() => {
             resolve(null)
         }, ms)
     })
