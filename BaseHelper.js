@@ -36,6 +36,10 @@ export function objHasOwnProperty(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop)
 }
 
+export function isObject(value) {
+    return getType(value) === 'object'
+}
+
 export function getType(value) {
     let baseType = typeof value
     switch (typeof value) {

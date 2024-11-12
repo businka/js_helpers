@@ -12,7 +12,7 @@ export default class ExtException extends Error {
         }
     }
 
-    constructor({message, detail, parent, action, dump = {}, stack2 = []} = {}) {
+    constructor({message, detail, parent, action, dump = {}, stack2 = [], console=false} = {}) {
         super(message);
         try {
             Object.setPrototypeOf(this, new.target.prototype);
@@ -59,6 +59,9 @@ export default class ExtException extends Error {
                 // if (parent instanceof ExtException) {
                 //     this.initFromExtException(parent, param)
                 // }
+            }
+            if (console) {
+                console.error(this.message, ":", this.detail, this.toDict())
             }
         } catch (err) {
             this.message = 'Error init ExtExeption'
