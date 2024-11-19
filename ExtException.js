@@ -1,19 +1,9 @@
 import {isEmptyObject} from "./BaseHelper";
 
 export default class ExtException extends Error {
-    static initByParent(params) {
-        const parent = params.parent
-        if (parent instanceof ExtException) {
-            return new (ExtExceptionTypes[parent.constructor.name] || ExtException)(params)
-        } else if (parent instanceof Error || parent instanceof DOMException) {
-            return new ExtException(params)
-        } else {
-            return new (ExtExceptionTypes[parent.__name__] || ExtException)(params)
-        }
-    }
 
-    constructor({message, detail, parent, action, dump = {}, stack2 = [], console=false} = {}) {
-        super(message);
+    constructor({message, detail, parent, action, dump = {}, stack2 = []} = {}) {
+        super('');
         try {
             Object.setPrototypeOf(this, new.target.prototype);
             this.code = 100
@@ -46,22 +36,10 @@ export default class ExtException extends Error {
                         'traceback': String(parent.stack).split('\n')[1]
                     })
 
-                } else {
-                    this.add_parent_to_stack(parent, "stack")
-                    if (!this.message) {
-                        this.message = parent.message
-                        this.detail = parent.detail
-                        this.code = parent.code
-                        this.dump = parent.dump
-                    }
-
                 }
                 // if (parent instanceof ExtException) {
                 //     this.initFromExtException(parent, param)
                 // }
-            }
-            if (console) {
-                console.error(this.message, ":", this.detail, this.toDict())
             }
         } catch (err) {
             this.message = 'Error init ExtExeption'
@@ -105,11 +83,11 @@ export default class ExtException extends Error {
     //     this.stack2 = parent.stack2;
     // }
 
-    add_parent_to_stack(parent, stack_field) {
-        if (!stack_field) {
-            stack_field = 'stack2'
+    add_parent_to_stack(parent) {
+        if (!(parent instanceof ExtException)) {
+            return;
         }
-        this.stack2 = this.stack2.concat(parent[stack_field]);
+        this.stack2 = this.stack2.concat(parent.stack2);
         if (!parent.action) {
             return;
         }
@@ -168,11 +146,6 @@ export default class ExtException extends Error {
     }
 }
 
-export class UserError extends ExtException {}
 
-export class Unauthorized extends ExtException {}
 
-export const ExtExceptionTypes = {
-    ExtException,
-    UserError
-}
+export class UserError extends  ExtException{}

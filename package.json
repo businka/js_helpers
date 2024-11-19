@@ -1,0 +1,12 @@
+{
+  "name": "bubot-helpers",
+  "version": "2.2.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/businka/js_helpers.git"
+  },
+  "keywords": [],
+  "author": "Razgovorov Mikhail",
+  "license": ""
+}
