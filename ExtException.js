@@ -146,6 +146,6 @@ export default class ExtException extends Error {
     }
 }
 
-
+export class Unauthorized extends ExtException {}
 
 export class UserError extends  ExtException{}
