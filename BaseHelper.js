@@ -105,7 +105,7 @@ export function getPropValueByPath(obj, path, def) {
         let _path = path.split('.')
         let i
         for (i = 0; i < _path.length; i++) {
-            if (Object.prototype.hasOwnProperty.call(_obj, _path[i])) {
+            if (_obj && Object.prototype.hasOwnProperty.call(_obj, _path[i])) {
                 _obj = _obj[_path[i]]
             } else {
                 return def
